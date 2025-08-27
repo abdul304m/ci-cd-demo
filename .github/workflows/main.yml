@@ -1,29 +1,32 @@
-{
-  "name": "ci-cd-demo",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node server.js",
-    "test": "jest",
-    "build": "echo \"Build step placeholder\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/abdul304m/ci-cd-demo.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/abdul304m/ci-cd-demo/issues"
-  },
-  "homepage": "https://github.com/abdul304m/ci-cd-demo#readme",
-  "dependencies": {
-    "express": "^4.21.2"
-  },
-  "devDependencies": {
-    "jest": "^30.0.5",
-    "supertest": "^7.1.4"
-  }
-}
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install dependencies
+      run: npm install   # 👈 replaced npm ci with npm install
+
+    - name: Run build
+      run: npm run build
+
+    - name: Run tests
+      run: npm test
